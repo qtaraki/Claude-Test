@@ -1,6 +1,6 @@
-# Claude Test - FastAPI Hello World
+# Claude Test - FastAPI App
 
-A simple REST API built with [FastAPI](https://fastapi.tiangolo.com/).
+A simple REST API built with [FastAPI](https://fastapi.tiangolo.com/) and [yfinance](https://github.com/ranaroussi/yfinance).
 
 ## What is FastAPI?
 
@@ -13,10 +13,11 @@ FastAPI is a modern, high-performance Python web framework for building APIs. It
 
 ## What This Project Does
 
-This project exposes two endpoints:
+This project exposes the following endpoints:
 
 - **`GET /hello`** — Returns `{"message": "Hello World"}`
-- **`GET /{anything}`** — Echoes back whatever path you send, e.g. `GET /foo` returns `{"message": "foo"}`
+- **`GET /stock/{symbol}?date=YYYY-MM-DD`** — Returns the historical closing price for a given stock symbol and date using yfinance. Returns 404 if no data is found (weekends, holidays, or invalid symbols).
+- **`GET /{anything}`** — Catch-all that echoes back whatever path you send, e.g. `GET /foo` returns `{"message": "foo"}`
 
 ## Getting Started
 
@@ -37,6 +38,12 @@ uvicorn main:app --reload
 ```bash
 curl http://localhost:8000/hello
 # {"message":"Hello World"}
+
+curl "http://localhost:8000/stock/AAPL?date=2025-01-15"
+# {"symbol":"AAPL","date":"2025-01-15","close":236.58}
+
+curl "http://localhost:8000/stock/AAPL?date=2025-01-18"
+# 404 — No data found (Saturday)
 
 curl http://localhost:8000/goodbye
 # {"message":"goodbye"}
