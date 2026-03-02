@@ -18,8 +18,29 @@ This project exposes the following endpoints:
 - **`GET /hello`** — Returns `{"message": "Hello World"}`
 - **`GET /stock/{symbol}/now`** — Returns the most recent closing price for the given symbol. Fetches the current time from [timeapi.io](https://timeapi.io) and uses the last 5 trading days to find the latest available price.
 - **`GET /stock/{symbol}?date=YYYY-MM-DD`** — Returns the historical closing price for a given stock symbol and date using yfinance. Returns 404 if no data is found (weekends, holidays, or invalid symbols).
-- **`GET /crypto/{coin_id}/now`** — Returns the current USD price for a cryptocurrency using the [CoinGecko API](https://www.coingecko.com/en/api). Uses coin IDs like `bitcoin`, `ethereum`, `solana`.
+- **`GET /crypto/{coin_id}/now`** — Returns the current USD price for a cryptocurrency using the [CoinGecko API](https://www.coingecko.com/en/api).
 - **`GET /crypto/{coin_id}?date=YYYY-MM-DD`** — Returns the historical USD price for a cryptocurrency on a given date (limited to past 365 days on CoinGecko's free tier).
+
+### Supported Cryptocurrencies
+
+The crypto endpoints use CoinGecko coin IDs. Here are some popular ones:
+
+| Coin ID | Cryptocurrency |
+|---------|----------------|
+| `bitcoin` | Bitcoin (BTC) |
+| `ethereum` | Ethereum (ETH) |
+| `solana` | Solana (SOL) |
+| `cardano` | Cardano (ADA) |
+| `ripple` | XRP |
+| `dogecoin` | Dogecoin (DOGE) |
+| `polkadot` | Polkadot (DOT) |
+| `avalanche-2` | Avalanche (AVAX) |
+| `chainlink` | Chainlink (LINK) |
+| `litecoin` | Litecoin (LTC) |
+| `tron` | TRON (TRX) |
+| `shiba-inu` | Shiba Inu (SHIB) |
+
+CoinGecko supports over 18,000 coins. For the full list, see the [CoinGecko coins list API](https://api.coingecko.com/api/v3/coins/list).
 - **`GET /{anything}`** — Catch-all that echoes back whatever path you send, e.g. `GET /foo` returns `{"message": "foo"}`
 
 ## Getting Started
