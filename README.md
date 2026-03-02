@@ -49,6 +49,14 @@ curl http://localhost:8000/goodbye
 # {"message":"goodbye"}
 ```
 
+## Running Tests
+
+Tests use `pytest` with mocked `yfinance` calls so they run fast and offline.
+
+```bash
+pytest test_main.py -v
+```
+
 ## License
 
 This project is licensed under the [GNU Affero General Public License v3.0](LICENSE).
