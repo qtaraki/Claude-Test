@@ -15,9 +15,9 @@ def hello_world():
 @app.get("/stock/{symbol}/now")
 def get_current_stock_price(symbol: str):
     try:
-        time_response = requests.get("http://worldtimeapi.org/api/timezone/Etc/UTC", timeout=5)
+        time_response = requests.get("https://timeapi.io/api/time/current/zone?timeZone=UTC", timeout=5)
         time_response.raise_for_status()
-        utc_now = time_response.json()["datetime"][:10]
+        utc_now = time_response.json()["dateTime"][:10]
     except Exception:
         raise HTTPException(status_code=503, detail="Unable to fetch current time from time server")
 

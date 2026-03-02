@@ -16,7 +16,7 @@ FastAPI is a modern, high-performance Python web framework for building APIs. It
 This project exposes the following endpoints:
 
 - **`GET /hello`** — Returns `{"message": "Hello World"}`
-- **`GET /stock/{symbol}/now`** — Returns the most recent closing price for the given symbol. Fetches the current time from [worldtimeapi.org](http://worldtimeapi.org) and uses the last 5 trading days to find the latest available price.
+- **`GET /stock/{symbol}/now`** — Returns the most recent closing price for the given symbol. Fetches the current time from [timeapi.io](https://timeapi.io) and uses the last 5 trading days to find the latest available price.
 - **`GET /stock/{symbol}?date=YYYY-MM-DD`** — Returns the historical closing price for a given stock symbol and date using yfinance. Returns 404 if no data is found (weekends, holidays, or invalid symbols).
 - **`GET /{anything}`** — Catch-all that echoes back whatever path you send, e.g. `GET /foo` returns `{"message": "foo"}`
 

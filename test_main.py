@@ -51,7 +51,7 @@ def test_invalid_date_format():
 @patch("main.requests.get")
 def test_current_stock_price(mock_requests_get, mock_ticker):
     mock_time_response = MagicMock()
-    mock_time_response.json.return_value = {"datetime": "2025-01-15T12:00:00+00:00"}
+    mock_time_response.json.return_value = {"dateTime": "2025-01-15T12:00:00"}
     mock_time_response.raise_for_status.return_value = None
     mock_requests_get.return_value = mock_time_response
 
