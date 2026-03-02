@@ -1,5 +1,6 @@
 from datetime import datetime, timedelta
 
+import requests
 import yfinance as yf
 from fastapi import FastAPI, HTTPException, Query
 
@@ -9,6 +10,27 @@ app = FastAPI()
 @app.get("/hello")
 def hello_world():
     return {"message": "Hello World"}
+
+
+@app.get("/stock/{symbol}/now")
+def get_current_stock_price(symbol: str):
+    try:
+        time_response = requests.get("http://worldtimeapi.org/api/timezone/Etc/UTC", timeout=5)
+        time_response.raise_for_status()
+        utc_now = time_response.json()["datetime"][:10]
+    except Exception:
+        raise HTTPException(status_code=503, detail="Unable to fetch current time from time server")
+
+    ticker = yf.Ticker(symbol)
+    history = ticker.history(period="5d")
+
+    if history.empty:
+        raise HTTPException(status_code=404, detail=f"No data found for {symbol}")
+
+    last_row = history.iloc[-1]
+    trade_date = str(history.index[-1].date())
+    close_price = round(float(last_row["Close"]), 2)
+    return {"symbol": symbol.upper(), "date": trade_date, "close": close_price}
 
 
 @app.get("/stock/{symbol}")
