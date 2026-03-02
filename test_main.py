@@ -74,3 +74,53 @@ def test_time_server_failure(mock_requests_get):
 
     response = client.get("/stock/AAPL/now")
     assert response.status_code == 503
+
+
+@patch("main.requests.get")
+def test_current_crypto_price(mock_requests_get):
+    mock_response = MagicMock()
+    mock_response.json.return_value = {"bitcoin": {"usd": 66875}}
+    mock_requests_get.return_value = mock_response
+
+    response = client.get("/crypto/bitcoin/now")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["coin"] == "bitcoin"
+    assert data["price"] == 66875.0
+
+
+@patch("main.requests.get")
+def test_current_crypto_invalid_coin(mock_requests_get):
+    mock_response = MagicMock()
+    mock_response.json.return_value = {}
+    mock_requests_get.return_value = mock_response
+
+    response = client.get("/crypto/fakecoin/now")
+    assert response.status_code == 404
+
+
+@patch("main.requests.get")
+def test_historical_crypto_price(mock_requests_get):
+    mock_response = MagicMock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {
+        "market_data": {"current_price": {"usd": 97007.78}}
+    }
+    mock_requests_get.return_value = mock_response
+
+    response = client.get("/crypto/bitcoin", params={"date": "2026-01-15"})
+    assert response.status_code == 200
+    data = response.json()
+    assert data["coin"] == "bitcoin"
+    assert data["date"] == "2026-01-15"
+    assert data["price"] == 97007.78
+
+
+@patch("main.requests.get")
+def test_historical_crypto_invalid_coin(mock_requests_get):
+    mock_response = MagicMock()
+    mock_response.status_code = 404
+    mock_requests_get.return_value = mock_response
+
+    response = client.get("/crypto/fakecoin", params={"date": "2026-01-15"})
+    assert response.status_code == 404

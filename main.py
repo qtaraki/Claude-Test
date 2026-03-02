@@ -51,6 +51,42 @@ def get_stock_price(symbol: str, date: str = Query(..., pattern=r"^\d{4}-\d{2}-\
     return {"symbol": symbol.upper(), "date": date, "close": close_price}
 
 
+COINGECKO_BASE = "https://api.coingecko.com/api/v3"
+
+
+@app.get("/crypto/{coin_id}/now")
+def get_current_crypto_price(coin_id: str):
+    response = requests.get(f"{COINGECKO_BASE}/simple/price", params={"ids": coin_id, "vs_currencies": "usd"}, timeout=5)
+    data = response.json()
+
+    if coin_id not in data:
+        raise HTTPException(status_code=404, detail=f"No data found for {coin_id}")
+
+    price = round(float(data[coin_id]["usd"]), 2)
+    return {"coin": coin_id, "price": price}
+
+
+@app.get("/crypto/{coin_id}")
+def get_historical_crypto_price(coin_id: str, date: str = Query(..., pattern=r"^\d{4}-\d{2}-\d{2}$")):
+    try:
+        parsed_date = datetime.strptime(date, "%Y-%m-%d")
+    except ValueError:
+        raise HTTPException(status_code=400, detail="Invalid date format. Use YYYY-MM-DD.")
+
+    cg_date = parsed_date.strftime("%d-%m-%Y")
+    response = requests.get(f"{COINGECKO_BASE}/coins/{coin_id}/history", params={"date": cg_date}, timeout=10)
+
+    if response.status_code == 404:
+        raise HTTPException(status_code=404, detail=f"No data found for {coin_id}")
+
+    data = response.json()
+    if "market_data" not in data:
+        raise HTTPException(status_code=404, detail=f"No data found for {coin_id} on {date}")
+
+    price = round(float(data["market_data"]["current_price"]["usd"]), 2)
+    return {"coin": coin_id, "date": date, "price": price}
+
+
 @app.get("/{path:path}")
 def catch_all(path: str):
     return {"message": path}

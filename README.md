@@ -18,6 +18,8 @@ This project exposes the following endpoints:
 - **`GET /hello`** — Returns `{"message": "Hello World"}`
 - **`GET /stock/{symbol}/now`** — Returns the most recent closing price for the given symbol. Fetches the current time from [timeapi.io](https://timeapi.io) and uses the last 5 trading days to find the latest available price.
 - **`GET /stock/{symbol}?date=YYYY-MM-DD`** — Returns the historical closing price for a given stock symbol and date using yfinance. Returns 404 if no data is found (weekends, holidays, or invalid symbols).
+- **`GET /crypto/{coin_id}/now`** — Returns the current USD price for a cryptocurrency using the [CoinGecko API](https://www.coingecko.com/en/api). Uses coin IDs like `bitcoin`, `ethereum`, `solana`.
+- **`GET /crypto/{coin_id}?date=YYYY-MM-DD`** — Returns the historical USD price for a cryptocurrency on a given date (limited to past 365 days on CoinGecko's free tier).
 - **`GET /{anything}`** — Catch-all that echoes back whatever path you send, e.g. `GET /foo` returns `{"message": "foo"}`
 
 ## Getting Started
@@ -48,6 +50,12 @@ curl "http://localhost:8000/stock/AAPL?date=2025-01-15"
 
 curl "http://localhost:8000/stock/AAPL?date=2025-01-18"
 # 404 — No data found (Saturday)
+
+curl http://localhost:8000/crypto/bitcoin/now
+# {"coin":"bitcoin","price":66875.0}
+
+curl "http://localhost:8000/crypto/bitcoin?date=2026-01-15"
+# {"coin":"bitcoin","date":"2026-01-15","price":97007.78}
 
 curl http://localhost:8000/goodbye
 # {"message":"goodbye"}
